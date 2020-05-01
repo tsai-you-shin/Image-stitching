@@ -45,43 +45,10 @@ warpped_images = Warpping(images, focal_lengths)
 
 print("creating grayscale images")
 gray_images = get_gray(warpped_images)
-window_size = 15
-
-print("Feature Detecting...")
-key_points = feature_detection(warpped_images, gray_images)
-
-print("Feature describing...")
-descriptors = feature_description(gray_images, key_points)
-print(len(descriptors), len(descriptors[0]), len(descriptors[1]))
-
-print("Feature matching...")
-best_matches = match(descriptors)
-print(len(best_matches))
-check = []
-for i in range(2):
-    img = gray_images[i].astype('uint8')
-    print(img)
-    check.append(cv.cvtColor(img, cv.COLOR_GRAY2BGR))
-
-for i in range(2):
-    for j in range(len(best_matches[i])):
-        for p in range(2):
-            if i == p: continue
-            if best_matches[i][j][p] != -1:
-                x = descriptors[i][j][0][0]
-                y = descriptors[i][j][0][1]
-                print("best_matches", i, x, y)
-                if i == 0:
-                    check[i][x][y] = [0,0,255]
-                else:
-                    check[i][x][y] = [0,255,0]
-                x = descriptors[p][best_matches[i][j][p]][0][0]
-                y = descriptors[p][best_matches[i][j][p]][0][1]
-                print("to best_matches", p, x, y)
-                if p == 0:
-                    check[p][x][y] = [0,0,255]
-                else:
-                    check[p][x][y] = [0,255,0]
-                
-cv2.imwrite('match1.png', check[0])
-cv2.imwrite('match2.png', check[1])
+window_size = 14
+x1 = 57
+y1 = 340
+x0 = 52
+y0 = 143
+cv.imwrite("from.png", gray_images[1][x1 - window_size : x1 + window_size, y1 - window_size : y1 + window_size])
+cv.imwrite("to.png", gray_images[0][x0 - window_size : x0 + window_size, y0 - window_size :y0 + window_size])

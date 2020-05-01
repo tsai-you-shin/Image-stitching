@@ -21,9 +21,9 @@ def cornerHarris(gray_img, blocksize, k):
 	R = detM - k*(traceM**2)
 	return R
 
-def feature_detect_implement(img, gray_img):
+def feature_detect_implement(img, gray_img, count):
 	gray = np.float32(gray_img)
-	dst1 = cv2.cornerHarris(gray,2,3,0.04)
+	dst1 = cv2.cornerHarris(gray, 2, 3, 0.04)
 	dst2 = cornerHarris(gray_img, 3, 0.04)
 
 	dst1 = cv2.dilate(dst1,None)
@@ -31,9 +31,9 @@ def feature_detect_implement(img, gray_img):
 	img[dst1>0.01*dst1.max()]=[0,0,255]
 	img2[dst2>0.01*dst2.max()]=[0,255,0]
 
-	cv2.imwrite('buildin gaussian.png',img)
-	cv2.imwrite('my gaussian.png',img2)
-
+	cv2.imwrite('buildin gaussian'+str(count)+'.png',img)
+	cv2.imwrite('my gaussian'+str(count)+'.png',img2)
+	count += 1
 	key_points = np.zeros(gray.shape)
 	key_points[dst2>0.01*dst2.max()] = 1
 	return key_points
@@ -41,5 +41,5 @@ def feature_detect_implement(img, gray_img):
 def feature_detection(images, gray_imgs):
 	Rs = np.zeros([images.shape[0], images.shape[1], images.shape[2]])
 	for i in range(images.shape[0]):
-		Rs[i] = feature_detect_implement(images[i], gray_imgs[i])
+		Rs[i] = feature_detect_implement(images[i], gray_imgs[i], i)
 	return Rs
