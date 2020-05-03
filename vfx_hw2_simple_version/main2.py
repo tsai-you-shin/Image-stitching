@@ -10,6 +10,7 @@ from feature_detection import *
 from feature_description import *
 from feature_matching2 import *
 from ransac import *
+from image_concatenate import *
 
 
 def loadExposureSeq(path):
@@ -52,12 +53,15 @@ gray_images = get_gray(warpped_images)
 print("Feature Detecting...")
 key_points = feature_detection(warpped_images, gray_images)
 print("Feature describing...")
-descriptors = feature_description(gray_images, key_points)
-print(len(descriptors), len(descriptors[0]), len(descriptors[1]))
-descriptors = np.array(descriptors)
-np.save('descriptors', descriptors)
+try:
+	descriptors = np.load('descriptors.npy',  allow_pickle=True)
+except:
+	descriptors = feature_description(gray_images, key_points)
+	print(len(descriptors), len(descriptors[0]), len(descriptors[1]))
+	descriptors = np.array(descriptors)
+	np.save('descriptors', descriptors)
 
-descriptors = np.load('descriptors.npy', allow_pickle=True)
+drift = 0
 for i in range(len(images) - 1):
     print("Feature matching...")
     best_matches = match(descriptors[i], descriptors[i + 1])
@@ -65,6 +69,16 @@ for i in range(len(images) - 1):
 
     print("Image matching...")
     best_shift = RANSAC(best_matches)
-    print(best_shift)
+    print("best shift:",best_shift)
+    
+    if i==0:
+    	full_img,r_shift = imgs_concatenate(warpped_images[i],warpped_images[i+1], best_shift, 0)
+    else:
+    	full_img, r_shift = imgs_concatenate(full_img, warpped_images[i+1], best_shift, r_shift)
+    drift += best_shift[0]*np.sign(best_shift[1])
+
+print("drift=", drift)
+full_img = bundle_adjustment(full_img, drift)    
+cv.imwrite('full_img.png', full_img)
 
 

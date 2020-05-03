@@ -21,21 +21,51 @@ def cornerHarris(gray_img, blocksize, k):
 	R = detM - k*(traceM**2)
 	return R
 
+def NMS(dst):
+	minimum = np.min(dst)
+	
+	win = 5
+	dst[-win:,:] = minimum
+	dst[:win, :] = minimum
+	dst[:,-win:] = minimum
+	dst[:, :win] = minimum
+	
+	key_points = np.zeros(dst.shape)
+	collect_points = 0
+	r = dst.shape[0]
+	c = dst.shape[1]
+	
+	while True:
+		if collect_points >= 500:
+			break
+		chose_point = np.argmax(dst)
+		max_r = chose_point//c
+		max_c = chose_point%c
+		collect_points+=1
+		key_points[max_r, max_c] = 1
+		dst[max_r-win:max_r+win+1 ,max_c-win: max_c+win+1] = minimum
+
+	return key_points
+	
+	
+	
 def feature_detect_implement(img, gray_img, count):
 	gray = np.float32(gray_img)
 	dst1 = cv2.cornerHarris(gray, 2, 3, 0.05)
 	dst2 = cornerHarris(gray_img, 3, 0.05)
-
-	dst1 = cv2.dilate(dst1,None)
 	img2 = img.copy()
-	img[dst1>0.01*dst1.max()]=[0,0,255]
-	img2[dst2>0.01*dst2.max()]=[0,255,0]
-
-	cv2.imwrite('buildin gaussian'+str(count)+'.png',img)
+	img1 = img.copy()
+	img1[dst1>0.01*dst1.max()]=[0,0,255]
+	key_points = NMS(dst2)
+	img2[key_points == 1]=[0,255,0]
+	
+	
+	cv2.imwrite('buildin gaussian'+str(count)+'.png',img1)
 	cv2.imwrite('my gaussian'+str(count)+'.png',img2)
-	count += 1
-	key_points = np.zeros(gray.shape)
-	key_points[dst2>0.01*dst2.max()] = 1
+	
+	#key_points = np.zeros(gray.shape)
+	#key_points[dst2>0.01*dst2.max()] = 1
+	
 	return key_points
 
 def feature_detection(images, gray_imgs):
@@ -43,3 +73,5 @@ def feature_detection(images, gray_imgs):
 	for i in range(images.shape[0]):
 		Rs[i] = feature_detect_implement(images[i], gray_imgs[i], i)
 	return Rs
+	
+	
