@@ -78,7 +78,8 @@ for i in range(len(images) - 1):
     drift += best_shift[0]*np.sign(best_shift[1])
 
 print("drift=", drift)
-full_img = bundle_adjustment(full_img, drift)    
 cv.imwrite('full_img.png', full_img)
+full_img = global_warping(full_img, drift)    
+cv.imwrite('full_img_warp.png', full_img)
 
 

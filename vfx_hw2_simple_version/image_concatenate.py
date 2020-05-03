@@ -2,7 +2,12 @@ import numpy as np
 
 def imgs_concatenate(full_img, img, shift, r_shift):
 	width = full_img.shape[1]+abs(shift[1])
-	height = full_img.shape[0]+(abs(shift[0]) if r_shift+shift[0]<0 or shift[0]>0 else 0)
+	if r_shift+shift[0]<0:
+		height = full_img.shape[0] + abs(r_shift+shift[0])
+	elif shift[0]>0:
+		height = full_img.shape[0] + shift[0]
+	else:
+		height = full_img.shape[0]
 	
 	img1 = np.zeros((height, width, 3))
 	img2 = np.zeros((height, width, 3))
@@ -10,7 +15,7 @@ def imgs_concatenate(full_img, img, shift, r_shift):
 	#let the left image be img1 and right image be image2
 	if shift[1] < 0 and r_shift+shift[0]> 0:
 		img2[:full_img.shape[0],abs(shift[1]):,:] = full_img
-		img1[r_shift+shift[0]:, :img.shape[1],:] = img
+		img1[r_shift+shift[0]:r_shift+shift[0]+img.shape[0], :img.shape[1],:] = img
 		
 	elif shift[1] < 0 and r_shift+shift[0] <= 0:
 		img2[abs(r_shift+shift[0]):,abs(shift[1]):,:] = full_img
@@ -18,10 +23,10 @@ def imgs_concatenate(full_img, img, shift, r_shift):
 		
 	elif shift[1]>=0 and r_shift+shift[0]> 0:
 		img1[:full_img.shape[0], :full_img.shape[1],:] = full_img
-		img2[r_shift+shift[0]:, -img.shape[1]:,:] = img
+		img2[r_shift+shift[0]:r_shift+shift[0]+img.shape[0], -img.shape[1]:,:] = img
 	else:
 		img1[abs(r_shift+shift[0]):, :full_img.shape[1]] = full_img
-		img2[:img.shape[0],-img.shape[1]: ] = full_img
+		img2[:img.shape[0],-img.shape[1]: ] = img
 		
 	new_img = np.zeros((height, width, 3))
 	if shift[1]<0:
@@ -40,7 +45,7 @@ def imgs_concatenate(full_img, img, shift, r_shift):
 	return new_img, 0 if r_shift+shift[0]<0 else r_shift+shift[0]
 	
 	
-def bundle_adjustment(img, drift):
+def global_warping(img, drift):
 	new_height = img.shape[0]- abs(drift)
 	new_img = np.zeros((new_height, img.shape[1], 3))
 	# do global warping
