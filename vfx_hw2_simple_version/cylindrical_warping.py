@@ -10,7 +10,6 @@ def Warpping(images, focal_lengths):
         s = focal_lengths[i]
         warpped_images.append(cylindricalWarpping(images[i], f, s))
         cv.imwrite("image_cyl" + str(i) + ".jpg", warpped_images[i])
-    warpped_images = np.asarray(warpped_images)
     return warpped_images
 def cylindricalWarpping(img, f, s):
     height, width= img.shape[:2]
