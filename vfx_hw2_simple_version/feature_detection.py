@@ -60,7 +60,7 @@ def feature_detect_implement(img, gray_img, count):
 	img2[key_points == 1]=[0,255,0]
 	
 	
-	cv2.imwrite('buildin gaussian'+str(count)+'.png',img1)
+	#cv2.imwrite('buildin gaussian'+str(count)+'.png',img1)
 	cv2.imwrite('my gaussian'+str(count)+'.png',img2)
 	
 	#key_points = np.zeros(gray.shape)
@@ -69,9 +69,9 @@ def feature_detect_implement(img, gray_img, count):
 	return key_points
 
 def feature_detection(images, gray_imgs):
-	Rs = np.zeros([images.shape[0], images.shape[1], images.shape[2]])
-	for i in range(images.shape[0]):
-		Rs[i] = feature_detect_implement(images[i], gray_imgs[i], i)
+	Rs = []
+	for i in range(len(images)):
+		Rs.append(feature_detect_implement(images[i], gray_imgs[i], i))
 	return Rs
 	
 	
