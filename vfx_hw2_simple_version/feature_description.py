@@ -25,7 +25,8 @@ def SIFT_description_implement(image, key_point):
 
     magnitude = np.sqrt(Dx ** 2 + Dy ** 2)
     angle = np.arctan2(Dy, Dx)
-    angle[np.argwhere(angle == np.pi)]  = -np.pi
+    for x, y in np.argwhere(angle == np.pi):
+        angle[x][y]  = -np.pi
     #print("angle", angle)
     print("magnitude", magnitude)
     #cv.imwrite('magnitude.png', magnitude)
