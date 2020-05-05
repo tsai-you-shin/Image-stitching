@@ -25,9 +25,9 @@ def loadExposureSeq(path):
     return images, np.asarray(focal_lengths, dtype=np.float32)
 
 def get_gray(images):
-    gray_images = np.zeros([images.shape[0], images.shape[1], images.shape[2]])
+    gray_images = []
     for i in range(len(images)):
-        gray_images[i] = cv2.cvtColor(images[i], cv2.COLOR_BGR2GRAY)
+        gray_images.append(cv.cvtColor(images[i], cv2.COLOR_BGR2GRAY))
     return gray_images
 
 parser = argparse.ArgumentParser(description='Code for VFX project 2.')
@@ -54,12 +54,12 @@ print("Feature Detecting...")
 key_points = feature_detection(warpped_images, gray_images)
 print("Feature describing...")
 try:
-	descriptors = np.load('descriptors.npy',  allow_pickle=True)
+    descriptors = np.load('descriptors.npy',  allow_pickle=True)
 except:
-	descriptors = feature_description(gray_images, key_points)
-	print(len(descriptors), len(descriptors[0]), len(descriptors[1]))
-	descriptors = np.array(descriptors)
-	np.save('descriptors', descriptors)
+    descriptors = feature_description(gray_images, key_points)
+    print(len(descriptors), len(descriptors[0]), len(descriptors[1]))
+    descriptors = np.array(descriptors)
+    np.save('descriptors', descriptors)
 
 drift = 0
 for i in range(len(images) - 1):
@@ -72,14 +72,12 @@ for i in range(len(images) - 1):
     print("best shift:",best_shift)
     
     if i==0:
-    	full_img,r_shift = imgs_concatenate(warpped_images[i],warpped_images[i+1], best_shift, 0)
+        full_img,r_shift = imgs_concatenate(warpped_images[i],warpped_images[i+1], best_shift, 0)
     else:
-    	full_img, r_shift = imgs_concatenate(full_img, warpped_images[i+1], best_shift, r_shift)
+        full_img, r_shift = imgs_concatenate(full_img, warpped_images[i+1], best_shift, r_shift)
     drift += best_shift[0]*np.sign(best_shift[1])
 
 print("drift=", drift)
 cv.imwrite('full_img.png', full_img)
 full_img = global_warping(full_img, drift)    
 cv.imwrite('full_img_warp.png', full_img)
-
-
