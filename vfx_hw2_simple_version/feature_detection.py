@@ -59,8 +59,6 @@ def feature_detect_implement(img, gray_img, count):
 	key_points = NMS(dst2)
 	img2[key_points == 1]=[0,255,0]
 	
-	
-	#cv2.imwrite('buildin gaussian'+str(count)+'.png',img1)
 	cv2.imwrite('my gaussian'+str(count)+'.png',img2)
 	
 	#key_points = np.zeros(gray.shape)

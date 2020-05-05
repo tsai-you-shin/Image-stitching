@@ -27,9 +27,7 @@ def SIFT_description_implement(image, key_point):
     angle = np.arctan2(Dy, Dx)
     for x, y in np.argwhere(angle == np.pi):
         angle[x][y]  = -np.pi
-    #print("angle", angle)
     print("magnitude", magnitude)
-    #cv.imwrite('magnitude.png', magnitude)
     num_bins = 36
     hist_step = 2*pi/num_bins
     bins = []
@@ -37,11 +35,8 @@ def SIFT_description_implement(image, key_point):
         bins.append(-pi + hist_step * i)
     window_size = 9
     hf_size = 4
-    #np.digitize(angle, bins, right=False)
     key_point_pos = []
     major_orientation = []
-    #image = image.astype('uint8')
-    #img = cv.cvtColor(image, cv.COLOR_GRAY2BGR)
     for kp in key_point:
         if (kp[0] - hf_size) < 0 or (kp[0] + hf_size) >= image.shape[0]:
             continue
@@ -70,8 +65,6 @@ def SIFT_description_implement(image, key_point):
         if(second_peak_val > 0.8 * first_peak_val):
             key_point_pos.append(kp)
             major_orientation.append((second_peak_ind + 0.5) * pi / 36)
-        #img[kp[0]][kp[1]]=[0,255,0] 
-    #cv.imwrite('check3.png', img)
 
     print("Local image descriptor")
 
@@ -111,9 +104,7 @@ def SIFT_description_implement(image, key_point):
             continue
         if key_point_pos[i][1] - 13.5 < 0 or key_point_pos[i][1] + 13.5 >= image.shape[1]:
             continue
-        #print("kp", key_point_pos[i][0], key_point_pos[i][1])
         cut_window = image[key_point_pos[i][0] - 8: key_point_pos[i][0] + 9, key_point_pos[i][1] - 8: key_point_pos[i][1] + 9]
-        #cv.imwrite('cut_window.png', cut_window)
 
         count = 0
         original = np.zeros([17, 17])
@@ -123,7 +114,6 @@ def SIFT_description_implement(image, key_point):
                 y_img = pos[count][1] + key_point_pos[i][1]
                 original[q][k] = interp(L, x_img, y_img)
                 count += 1
-        #cv.imwrite('original.png', original)
 
         pos = np.matmul(pos, rotation_matrix)
         X = np.reshape(pos[:, 0], (-1, 1))
@@ -139,8 +129,6 @@ def SIFT_description_implement(image, key_point):
                 y_img = pr[count][1]
                 window_17[q][k] = interp(L, x_img, y_img)
                 count += 1 
-        #print("orientation", orientation)
-        #cv.imwrite('window_17.png', window_17)
 
         #make real 16*16 window
         window = np.zeros([16, 16])
@@ -149,7 +137,6 @@ def SIFT_description_implement(image, key_point):
             for q in range(16):
                 window[q][k] = interp(window_17, sixteen_pos[count][0], sixteen_pos[count][1])
                 count += 1
-        #cv.imwrite('window.png', window)
 
         Dx_win = cv.Scharr(window, cv.CV_64F, 1, 0)
         Dy_win = cv.Scharr(window, cv.CV_64F, 0, 1)
@@ -175,11 +162,8 @@ def SIFT_description_implement(image, key_point):
         for c in range(16):
             mag = cells_mag[c].ravel()
             ang = cells_angle[c].ravel()
-            #print("angle", ang)
-            #print("bin", bins)
             hist = np.digitize(ang, bins, right=False)
             hist = hist - 1
-            #print("hist", hist)
             orient_bin = np.zeros([8])
             for h in range(len(hist)):
                 orient_bin[hist[h]] += mag[h]
@@ -197,7 +181,6 @@ def SIFT_description_implement(image, key_point):
             feature_normalized = feature_normalized / denominator
         feature_descriptors.append([(key_point_pos[i][0], key_point_pos[i][1]), feature_normalized])
         img[key_point_pos[i][0]][key_point_pos[i][1]]=[0,255,0]
-    cv.imwrite('check2.png', img)
     
     return feature_descriptors
 

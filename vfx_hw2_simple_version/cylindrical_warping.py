@@ -9,7 +9,6 @@ def Warpping(images, focal_lengths):
         f = focal_lengths[i]
         s = focal_lengths[i]
         warpped_images.append(cylindricalWarpping(images[i], f, s))
-        cv.imwrite("image_cyl" + str(i) + ".jpg", warpped_images[i])
     return warpped_images
 def cylindricalWarpping(img, f, s):
     height, width= img.shape[:2]
@@ -21,7 +20,6 @@ def cylindricalWarpping(img, f, s):
       for x in range(width):
         theta = math.atan((x - x_0) / f)
         h = (y - y_0) / math.sqrt((x - x_0) ** 2 + f ** 2) * s
-        #print(int(x_0 + s * theta), int(y_0 + h))
         res[int(y_0 + h), int(x_0 + s * theta), :] = img[y, x, :]
         
         
