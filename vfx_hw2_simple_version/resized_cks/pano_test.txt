@@ -1,0 +1,16 @@
+resized_0.jpg 605.158
+resized_1.jpg 607.031
+resized_2.jpg 607.943
+resized_3.jpg 608.772
+resized_4.jpg 605.703
+resized_5.jpg 606.432
+resized_6.jpg 608.264
+resized_7.jpg 609.048
+resized_8.jpg 610.291
+resized_9.jpg 611.394
+resized_10.jpg 612.628
+resized_11.jpg 613.27
+resized_12.jpg 614.473
+resized_13.jpg 615.102
+resized_14.jpg 616.188
+resized_15.jpg 616.832
