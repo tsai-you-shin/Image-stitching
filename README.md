@@ -38,7 +38,7 @@ python main.py --input <related_path_of_folder_of_images>
 ## 實作流程
 ### Take pictures
 - 原本想要轉動相機，拍攝直向的照片。不過實際操作後發現，我們用的腳架無法讓我們兼顧相機拍攝直向，且固定在同一個圓心這件事，所以後來使用的照片是橫向的（如下圖）。
-![](https://i.imgur.com/qMok2m2.jpg)
+- ![](https://i.imgur.com/qMok2m2.jpg)
 
 ### Image warping （cylindrical warpping）
 - 透過autostitch我們可以獲得focal length。我們將照片名稱與其對應的focal length，存在pano_test.txt中，以便程式後續讀取。
@@ -73,7 +73,7 @@ python main.py --input <related_path_of_folder_of_images>
         - 最後，在算好後的bins中找出weighted magnitude最大的bin，將該bin的中間值orientation，作為該keypoint的major orientation。而除了最大值，我們也要考慮次大的值（second peak），倘若其大小有超過（最大值*0.8），則也要把它assign到同一個keypoint的major orientation中。
     ![](https://i.imgur.com/TocPD2K.png)
     -   Local image descriptor
-    ![](https://i.stack.imgur.com/OTZDW.jpg)
+        - ![](https://i.stack.imgur.com/OTZDW.jpg)
         - 如上圖所示，在找到每個keypoint的major orientation後，我們要以該keypoint為中心，按照其major orientation，旋轉16 * 16的window。
         接著把16 * 16 的window 分為 16 個 4 * 4 的cell。
         - 接著在每個cell裡如上一步，計算出gradient magnitude和direction，並製作8個orientation bin，在cell中「投票」。注意此步中也需要經過gaussian kernel加權，離keypoint，也就是中心點越近的權重越大。
